@@ -7,6 +7,24 @@ defmodule Identicon do
     input
     |> hash_input
     |> pick_color
+    |> build_grid
+  end
+
+  def build_grid(%Identicon.Image{hex: hex} = image) do
+    grid =
+      hex
+      |> Enum.chunk(3)
+      |> Enum.map(&mirror_row/1)
+      |> List.flatten
+      |> Enum.with_index
+
+    %Identicon.Image{image | grid: grid}
+  end
+
+  def mirror_row([first, second | _third] = row) do
+    # [first, second | _third] = row
+
+    row ++ [second, first] # concatenate list
   end
 
   def pick_color(%Identicon.Image{hex: [r, g, b | _tail]} = image) do # taking a variable image, then pattern match it
